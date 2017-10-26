@@ -5,14 +5,6 @@
 
 package net.atomique.ksar;
 
-import net.atomique.ksar.ui.Desktop;
-import net.atomique.ksar.xml.CnxHistory;
-import net.atomique.ksar.xml.ColumnConfig;
-import net.atomique.ksar.xml.HostInfo;
-import net.atomique.ksar.xml.OSConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,7 +13,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.atomique.ksar.ui.Desktop;
+import net.atomique.ksar.xml.CnxHistory;
+import net.atomique.ksar.xml.ColumnConfig;
+import net.atomique.ksar.xml.HostInfo;
+import net.atomique.ksar.xml.OSConfig;
 
 public class GlobalOptions {
 
@@ -136,12 +138,12 @@ public class GlobalOptions {
     GlobalOptions.dodebug = do_debug;
   }
 
-  static String getCLfilename() {
-    return CLfilename;
+  static List<String> getCLfilenames() {
+    return CLfilenames;
   }
 
-  static void setCLfilename(String CL_filename) {
-    GlobalOptions.CLfilename = CL_filename;
+  static void setCLfilenames(List<String> CL_filenames) {
+    GlobalOptions.CLfilenames = CL_filenames;
   }
 
   public static String getFileseparator() {
@@ -246,6 +248,14 @@ public class GlobalOptions {
 
   }
 
+  public static String getReportPath() {
+    return reportPath;
+  }
+
+  public static void setReportPath(String reportPath) {
+    GlobalOptions.reportPath = reportPath;
+  }
+
   private static Desktop UI = null;
   private static Properties systemprops;
   private static String userhome;
@@ -256,7 +266,8 @@ public class GlobalOptions {
   private static HashMap<String, CnxHistory> HistoryList;
   private static HashMap<String, HostInfo> HostInfoList;
   private static boolean dodebug = false;
-  private static String CLfilename = null;
+  private static List<String> CLfilenames = null;
   private static HashMap<String, Class> ParserMap;
   private static boolean firstrun = true;
+  private static String reportPath = null;
 }

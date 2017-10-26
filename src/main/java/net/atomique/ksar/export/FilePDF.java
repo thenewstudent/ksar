@@ -94,7 +94,7 @@ public class FilePDF extends PdfPageEventHelper implements Runnable {
     //document.addKeywords(mysar.myOS.sarStartDate);
     //document.addKeywords(mysar.myOS.sarEndDate);
     document.addCreator("kSar Version:" + VersionNumber.getVersionNumber());
-    document.addAuthor("Xavier cherif");
+    //document.addAuthor("Xavier cherif");
 
     // open the doc
     document.open();
@@ -110,8 +110,7 @@ public class FilePDF extends PdfPageEventHelper implements Runnable {
     if (dialog != null) {
       dialog.dispose();
     }
-
-
+    mysar.exportFinishedSignal.countDown();
   }
 
 
@@ -194,11 +193,10 @@ public class FilePDF extends PdfPageEventHelper implements Runnable {
       pdfcb.beginText();
       pdfcb.setFontAndSize(bf, 48);
       pdfcb.setColorFill(new BaseColor(0x00, 0x00, 0x00));
-      pdfcb.showTextAligned(PdfContentByte.ALIGN_CENTER, title, ((pdfwidth - pdfmargins) / 2), 500,
-          0);
+      pdfcb.showTextAligned(PdfContentByte.ALIGN_CENTER, title, ((pdfwidth - pdfmargins) / 2), 500, 0);
       pdfcb.setFontAndSize(bf, 36);
-      pdfcb.showTextAligned(PdfContentByte.ALIGN_CENTER, t_date, ((pdfwidth - pdfmargins) / 2), 300,
-          0);
+      pdfcb.showTextAligned(PdfContentByte.ALIGN_CENTER,  "Host: "+ mysar.myparser.gethostName(), ((pdfwidth - pdfmargins) / 2), 400, 0);
+      pdfcb.showTextAligned(PdfContentByte.ALIGN_CENTER, t_date, ((pdfwidth - pdfmargins) / 2), 300, 0);
       pdfcb.endText();
       document.newPage();
 

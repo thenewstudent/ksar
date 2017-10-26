@@ -63,14 +63,15 @@ public class FileRead extends Thread {
   }
 
   public void run() {
-    if (sarfilename == null) {
+    if (sarfilename == null || sarfilename.trim().length() == 0) {
       return;
     }
 
     try {
       tmpfile = new FileReader(sarfilename);
     } catch (FileNotFoundException ex) {
-      log.error("IO Exception", ex);
+      log.error("IO Exception: file="+sarfilename, ex);
+      return;
     }
 
     myfilereader = new BufferedReader(tmpfile);

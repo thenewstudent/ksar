@@ -5,15 +5,19 @@
 
 package net.atomique.ksar;
 
-import net.atomique.ksar.ui.Desktop;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.atomique.ksar.ui.Desktop;
 
 public class Main {
 
@@ -88,7 +92,7 @@ public class Main {
         }
         if ("-help".equals(arg)) {
           usage();
-          continue;
+          System.exit(0);
         }
         if ("-test".equals(arg)) {
           GlobalOptions.setDodebug(true);
@@ -96,11 +100,26 @@ public class Main {
         }
         if ("-input".equals(arg)) {
           if (i < args.length) {
-            GlobalOptions.setCLfilename(args[i++]);
+            ArrayList<String> files = new ArrayList<>();
+            files.addAll(Arrays.asList(args[i++].split(",")));
+            Predicate<String> emptypre = estr -> estr == null || estr.trim().length() == 0;
+            files.removeIf(emptypre);
+            GlobalOptions.setCLfilenames(files);
           } else {
             exit_error(resource.getString("INPUT_REQUIRE_ARG"));
           }
           continue;
+        }
+        if ("-output".equals(arg)) {
+            if (i < args.length) {
+              String outputfilePath = args[i++];
+              if (outputfilePath != null && outputfilePath.trim().length() > 0) {
+                GlobalOptions.setReportPath(outputfilePath);
+              }
+            } else {
+              exit_error(resource.getString("OUTPUT_REQUIRE_ARG"));
+            }
+            continue;
         }
       }
     }

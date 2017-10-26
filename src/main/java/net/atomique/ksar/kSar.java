@@ -5,18 +5,20 @@
 
 package net.atomique.ksar;
 
+import java.beans.PropertyVetoException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+
+import javax.swing.JDesktopPane;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.atomique.ksar.graph.Graph;
 import net.atomique.ksar.ui.DataView;
 import net.atomique.ksar.ui.SortedTreeNode;
 import net.atomique.ksar.ui.TreeNodeInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.beans.PropertyVetoException;
-import java.io.BufferedReader;
-import java.io.IOException;
-
-import javax.swing.JDesktopPane;
 
 public class kSar {
 
@@ -39,14 +41,42 @@ public class kSar {
     } catch (PropertyVetoException vetoe) {
       log.error("PropertyVetoException", vetoe);
     }
-    if (GlobalOptions.getCLfilename() != null) {
-      do_fileread(GlobalOptions.getCLfilename());
+    if (GlobalOptions.getCLfilenames() != null && GlobalOptions.getCLfilenames().size() > 0) {
+      String filename = GlobalOptions.getCLfilenames().remove(0);
+      do_fileread(filename);
     }
   }
 
   public kSar() {
   }
 
+  public CountDownLatch exportFinishedSignal = new CountDownLatch(1);
+  public void processingDone() {
+    //If we are the last file, and we have the generate the report set, generate the report.
+    if (GlobalOptions.getCLfilenames().isEmpty()) {
+      if (GlobalOptions.getReportPath() != null && GlobalOptions.getReportPath().trim().length() > 0) {
+        log.info("Finished with all input files. Generating report (PDF)");
+        dataview.doExportPDF(GlobalOptions.getReportPath());
+        try {
+        log.info("Waiting for report to finish");
+        exportFinishedSignal.await();
+        log.info("Finished with report generation. Report available at: " + GlobalOptions.getReportPath() + ". Exiting...");
+        System.exit(0);
+        } catch (InterruptedException e) {
+        e.printStackTrace();
+        }
+      }
+      return;
+    }
+    String filename = null;
+    do {
+      filename = GlobalOptions.getCLfilenames().remove(0);
+      if (filename != null && filename.trim().length() > 0) {
+        do_fileread(filename);
+      }
+    } while (!GlobalOptions.getCLfilenames().isEmpty() && (filename == null || filename.trim().length() == 0));  //Basically handle the scenario where the filenames are empty just in case
+  }
+  
   public void do_fileread(String filename) {
     if (filename == null) {
       launched_action = new FileRead(this);

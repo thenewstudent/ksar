@@ -143,6 +143,7 @@ public abstract class AllParser {
   protected int firstdatacolumn = 0;
 
   abstract public String getInfo();
+  abstract public String gethostName();
 
   abstract public void parse_header(String s);
 

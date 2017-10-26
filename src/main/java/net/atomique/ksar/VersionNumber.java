@@ -28,13 +28,17 @@ public class VersionNumber {
     BufferedReader reader = null;
     try {
       InputStream is = this.getClass().getResourceAsStream("/kSar.version");
-      InputStreamReader isr = new InputStreamReader(is);
-      reader = new BufferedReader(isr);
-      String line = "";
-      while ((line = reader.readLine()) != null) {
-        tmpstr.append(line);
+      if (is == null) {
+        tmpstr.append("0.0.0");
+      } else {
+        InputStreamReader isr = new InputStreamReader(is);
+        reader = new BufferedReader(isr);
+        String line = "";
+        while ((line = reader.readLine()) != null) {
+          tmpstr.append(line);
+        }
+        reader.close();
       }
-      reader.close();
     } catch (IOException ex) {
       log.error("Unable to read Current version", ex);
       return;

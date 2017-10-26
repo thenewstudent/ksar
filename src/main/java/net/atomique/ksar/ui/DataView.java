@@ -470,6 +470,7 @@ public class DataView extends javax.swing.JInternalFrame {
     } else {
       jButton1.setText("");
       jButton1.setEnabled(false);
+      mysar.processingDone();
     }
   }
 
